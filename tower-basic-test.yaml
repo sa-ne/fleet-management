@@ -10,4 +10,4 @@
 
     - name: Debug Version
       ansible.builtin.debug:
-        msg: "Cluster Version: {{ cluster_version.resources[0].status.desired.version }}"
+        var: cluster_version
