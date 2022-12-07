@@ -1,4 +1,6 @@
 ---
 collections:
+  - name: containers.podman
+    source: https://galaxy.ansible.com
   - name: kubernetes.core
     source: https://galaxy.ansible.com

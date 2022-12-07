@@ -1,0 +1,24 @@
+- name: Setup Dynamic IMI
+  hosts: localhost
+  tasks:
+    - name: Build Dynamic Inventory
+      ansible.builtin.include_role:
+        name: cnv-inventory
+      vars:
+        cnv_label_selectors:
+          - type=edge-instance
+        cnv_namespace: edge-vms
+
+- name: Deploy Application
+  become: yes
+  hosts: edge_hosts
+  tasks:
+    - name: Deploy Application
+      ansible.builtin.include_role:
+        name: podman-simple-app
+      vars:
+        podman_container_name: wasm-demo
+        podman_image: quay.io/nasx/wasm-demo
+        podman_image_tag: latest
+        podman_ports:
+          - "8080:8080"

@@ -1,0 +1,16 @@
+- name: Pull Image ({{ podman_image }})
+  containers.podman.podman_image:
+    name: "{{ podman_image }}"
+    pull: yes
+    state: present
+    tag: "{{ podman_image_tag | default('latest') }}"
+
+- name: Deploy Container
+  containers.podman.podman_container:
+    generate_systemd:
+      path: /usr/lib/systemd
+      restart_policy: always
+    image: "{{ podman_image }}:{{ podman_image_tag | default('latest') }}"
+    name: "{{ podman_container_name }}"
+    ports: "{{ podman_ports }}"
+    state: started

@@ -1,0 +1,25 @@
+- name: Assert Variables are Defined
+  ansible.builtin.assert:
+    that:
+      - cnv_label_selectors is defined
+      - cnv_namespace is defined
+
+- name: Query VirtualMachineInstances
+  kubernetes.core.k8s_info:
+    api_version: kubevirt.io/v1
+    kind: VirtualMachineInstance
+    label_selectors: "{{ cnv_label_selectors }}"
+    namespace: "{{ cnv_namespace }}"
+  register: vmi_results
+
+- ansible.builtin.debug:
+    var: vmi_results
+
+- name: Generate Inventory
+  ansible.builtin.add_host:
+    ansible_ssh_host: "{{ item.status.interfaces[0].ipAddress }}"
+    ansible_ssh_port: "22"
+    groups:
+      - edge_hosts
+    name: "{{ item.metadata.name }}"
+  loop: "{{ vmi_results.resources }}"
