@@ -1,0 +1,13 @@
+- name: Test Execution Environment and Credentials
+  hosts: localhost
+  tasks:
+    - name: Get Cluster Version
+      kubernetes.core.k8s_info:
+        api_version: config.openshift.io/v1
+        kind: ClusterVersion
+        name: version
+      register: cluster_version
+
+    - name: Debug Version
+      ansible.builtin.debug:
+        msg: "Cluster Version: {{ cluster_version.resources[0].status.desired.version }}"
